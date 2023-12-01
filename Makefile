@@ -6,13 +6,13 @@ GIT_VERSION ?= $(shell git describe --tags --always --dirty)
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 
-.PHONY: clean
-clean:
-	rm -rf dist/
-
 .PHONY: build
 build: clean
 	go build -o dist/monkey ./cmd/monkey
+
+.PHONY: clean
+clean:
+	rm -rf dist/
 
 .PHONY: test
 test:
@@ -21,7 +21,6 @@ test:
 .PHONY: lint
 lint:
 	golangci-lint run -v --timeout=10m
-
 fmt:
 	@gofmt -l -w $(SRC)
 
