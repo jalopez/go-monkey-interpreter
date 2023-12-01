@@ -46,55 +46,82 @@ func TestNextToken_simpleTokens(t *testing.T) {
 	runTest(t, input, expected)
 }
 
-// func TestNextToken_fullProgram(t *testing.T) {
-// 	input := `let five = 5;
-// let ten = 10;
-
-// let add = fn(x, y) {
-// x + y;
-// };
-
-// let result = add(five, ten);
-// `
+// func TestNextToken_validIdentifiers(t *testing.T) {
+// 	input := `variable with_snake_case andCamelCase and_1_2_3`
 // 	expected := []TokenResult{
-// 		{token.LET, "let"},
-// 		{token.IDENT, "five"},
-// 		{token.ASSIGN, "="},
-// 		{token.INT, "5"},
-// 		{token.SEMICOLON, ";"},
-// 		{token.LET, "let"},
-// 		{token.IDENT, "ten"},
-// 		{token.ASSIGN, "="},
-// 		{token.INT, "10"},
-// 		{token.SEMICOLON, ";"},
-// 		{token.LET, "let"},
-// 		{token.IDENT, "add"},
-// 		{token.ASSIGN, "="},
-// 		{token.FUNCTION, "fn"},
-// 		{token.LPAREN, "("},
-// 		{token.IDENT, "x"},
-// 		{token.COMMA, ","},
-// 		{token.IDENT, "y"},
-// 		{token.RPAREN, ")"},
-// 		{token.LBRACE, "{"},
-// 		{token.IDENT, "x"},
-// 		{token.PLUS, "+"},
-// 		{token.IDENT, "y"},
-// 		{token.SEMICOLON, ";"},
-// 		{token.RBRACE, "}"},
-// 		{token.SEMICOLON, ";"},
-// 		{token.LET, "let"},
-// 		{token.IDENT, "result"},
-// 		{token.ASSIGN, "="},
-// 		{token.IDENT, "add"},
-// 		{token.LPAREN, "("},
-// 		{token.IDENT, "five"},
-// 		{token.COMMA, ","},
-// 		{token.IDENT, "ten"},
-// 		{token.RPAREN, ")"},
-// 		{token.SEMICOLON, ";"},
+// 		{token.IDENT, "variable"},
+// 		{token.IDENT, "with_snake_case"},
+// 		{token.IDENT, "andCamelCase"},
+// 		{token.IDENT, "and_1_2_3"},
 // 		{token.EOF, ""},
 // 	}
 
 // 	runTest(t, input, expected)
 // }
+
+// func TestNextToken_illegalIdentifiers(t *testing.T) {
+// 	input := `1variable 1_variable 1variable`
+// 	expected := []TokenResult{
+// 		{token.ILLEGAL, "1"},
+// 		{token.IDENT, "variable"},
+// 		{token.ILLEGAL, "1"},
+// 		{token.ILLEGAL, "_"},
+// 		{token.IDENT, "variable"},
+// 		{token.EOF, ""},
+// 	}
+
+// 	runTest(t, input, expected)
+// }
+
+func TestNextToken_fullProgram(t *testing.T) {
+	input := `let five = 5;
+let ten = 10;
+
+let add = fn(x, y) {
+x + y;
+};
+
+let result = add(five, ten);
+`
+	expected := []TokenResult{
+		{token.LET, "let"},
+		{token.IDENT, "five"},
+		{token.ASSIGN, "="},
+		{token.INT, "5"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENT, "ten"},
+		{token.ASSIGN, "="},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENT, "add"},
+		{token.ASSIGN, "="},
+		{token.FUNCTION, "fn"},
+		{token.LPAREN, "("},
+		{token.IDENT, "x"},
+		{token.COMMA, ","},
+		{token.IDENT, "y"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.IDENT, "x"},
+		{token.PLUS, "+"},
+		{token.IDENT, "y"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.SEMICOLON, ";"},
+		{token.LET, "let"},
+		{token.IDENT, "result"},
+		{token.ASSIGN, "="},
+		{token.IDENT, "add"},
+		{token.LPAREN, "("},
+		{token.IDENT, "five"},
+		{token.COMMA, ","},
+		{token.IDENT, "ten"},
+		{token.RPAREN, ")"},
+		{token.SEMICOLON, ";"},
+		{token.EOF, ""},
+	}
+
+	runTest(t, input, expected)
+}
