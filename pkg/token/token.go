@@ -1,0 +1,37 @@
+package token
+
+// Type type of token
+type Type string
+
+// Token token
+type Token struct {
+	Type    Type
+	Literal string
+}
+
+// All types of tokens
+const (
+	ILLEGAL = "ILLEGAL"
+	EOF     = "EOF"
+
+	// Identifiers + literals
+	IDENT = "IDENT" // add, foobar, x, y, ...
+	INT   = "INT"   // 1343456
+
+	// Operators
+	ASSIGN = "="
+	PLUS   = "+"
+
+	// Delimiters
+	COMMA     = ","
+	SEMICOLON = ";"
+
+	LPAREN = "("
+	RPAREN = ")"
+	LBRACE = "{"
+	RBRACE = "}"
+
+	// Keywords
+	FUNCTION = "FUNCTION"
+	LET      = "LET"
+)
