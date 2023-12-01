@@ -30,7 +30,7 @@ func runTest(t *testing.T, input string, tokens []TokenResult) {
 }
 
 func TestNextToken_simpleTokens(t *testing.T) {
-	input := `=+(){},;-/*!<>`
+	input := `= + ( ) { } , ; - / * ! < > == !=`
 	expected := []TokenResult{
 		{token.ASSIGN, "="},
 		{token.PLUS, "+"},
@@ -46,6 +46,8 @@ func TestNextToken_simpleTokens(t *testing.T) {
 		{token.BANG, "!"},
 		{token.LT, "<"},
 		{token.GT, ">"},
+		{token.EQ, "=="},
+		{token.NOTEQ, "!="},
 		{token.EOF, ""},
 	}
 

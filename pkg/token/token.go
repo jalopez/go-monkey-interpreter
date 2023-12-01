@@ -26,8 +26,10 @@ const (
 	ASTERISK = "*"
 	SLASH    = "/"
 
-	LT = "<"
-	GT = ">"
+	LT    = "<"
+	GT    = ">"
+	EQ    = "=="
+	NOTEQ = "!="
 
 	// Delimiters
 	COMMA     = ","
