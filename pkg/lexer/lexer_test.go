@@ -46,32 +46,32 @@ func TestNextToken_simpleTokens(t *testing.T) {
 	runTest(t, input, expected)
 }
 
-// func TestNextToken_validIdentifiers(t *testing.T) {
-// 	input := `variable with_snake_case andCamelCase and_1_2_3`
-// 	expected := []TokenResult{
-// 		{token.IDENT, "variable"},
-// 		{token.IDENT, "with_snake_case"},
-// 		{token.IDENT, "andCamelCase"},
-// 		{token.IDENT, "and_1_2_3"},
-// 		{token.EOF, ""},
-// 	}
+func TestNextToken_validIdentifiers(t *testing.T) {
+	input := `variable with_snake_case andCamelCase and_1_2_3`
+	expected := []TokenResult{
+		{token.IDENT, "variable"},
+		{token.IDENT, "with_snake_case"},
+		{token.IDENT, "andCamelCase"},
+		{token.IDENT, "and_1_2_3"},
+		{token.EOF, ""},
+	}
 
-// 	runTest(t, input, expected)
-// }
+	runTest(t, input, expected)
+}
 
-// func TestNextToken_illegalIdentifiers(t *testing.T) {
-// 	input := `1variable 1_variable 1variable`
-// 	expected := []TokenResult{
-// 		{token.ILLEGAL, "1"},
-// 		{token.IDENT, "variable"},
-// 		{token.ILLEGAL, "1"},
-// 		{token.ILLEGAL, "_"},
-// 		{token.IDENT, "variable"},
-// 		{token.EOF, ""},
-// 	}
+func TestNextToken_illegalIdentifiers(t *testing.T) {
+	input := `1variable 1_variable 1variable 1_2_3 123`
+	expected := []TokenResult{
+		{token.ILLEGAL, "1variable"},
+		{token.ILLEGAL, "1_variable"},
+		{token.ILLEGAL, "1variable"},
+		{token.ILLEGAL, "1_2_3"},
+		{token.INT, "123"},
+		{token.EOF, ""},
+	}
 
-// 	runTest(t, input, expected)
-// }
+	runTest(t, input, expected)
+}
 
 func TestNextToken_fullProgram(t *testing.T) {
 	input := `let five = 5;

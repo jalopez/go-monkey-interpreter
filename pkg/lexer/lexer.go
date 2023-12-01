@@ -50,8 +50,15 @@ func (l *Lexer) NextToken() token.Token {
 			nextToken.Type = token.LookupIdent(nextToken.Literal)
 			return nextToken
 		case isDigit(l.ch):
+			literal, ok := l.readNumber()
+
 			nextToken.Type = token.INT
-			nextToken.Literal = l.readNumber()
+
+			if !ok {
+				nextToken.Type = token.ILLEGAL
+			}
+
+			nextToken.Literal = literal
 			return nextToken
 		default:
 			nextToken = newToken(token.ILLEGAL, l.ch)
@@ -75,18 +82,18 @@ func (l *Lexer) readChar() {
 
 func (l *Lexer) readIdentifier() string {
 	position := l.position
-	for isLetter(l.ch) {
+	for isLetter(l.ch) || isDigit(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.position]
 }
 
-func (l *Lexer) readNumber() string {
+func (l *Lexer) readNumber() (string, bool) {
 	position := l.position
-	for isDigit(l.ch) {
+	for isDigit(l.ch) || isLetter(l.ch) {
 		l.readChar()
 	}
-	return l.input[position:l.position]
+	return l.input[position:l.position], isValidNumber(l.input[position:l.position])
 }
 
 func (l *Lexer) skipWhitespace() {
@@ -105,4 +112,13 @@ func isLetter(ch byte) bool {
 
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
+}
+
+func isValidNumber(literal string) bool {
+	for _, ch := range literal {
+		if !isDigit(byte(ch)) {
+			return false
+		}
+	}
+	return true
 }
