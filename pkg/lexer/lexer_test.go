@@ -30,7 +30,7 @@ func runTest(t *testing.T, input string, tokens []TokenResult) {
 }
 
 func TestNextToken_simpleTokens(t *testing.T) {
-	input := `=+(){},;`
+	input := `=+(){},;-/*!<>`
 	expected := []TokenResult{
 		{token.ASSIGN, "="},
 		{token.PLUS, "+"},
@@ -40,6 +40,12 @@ func TestNextToken_simpleTokens(t *testing.T) {
 		{token.RBRACE, "}"},
 		{token.COMMA, ","},
 		{token.SEMICOLON, ";"},
+		{token.MINUS, "-"},
+		{token.SLASH, "/"},
+		{token.ASTERISK, "*"},
+		{token.BANG, "!"},
+		{token.LT, "<"},
+		{token.GT, ">"},
 		{token.EOF, ""},
 	}
 
@@ -82,6 +88,12 @@ x + y;
 };
 
 let result = add(five, ten);
+
+if (5 < 10) {
+	return true;
+} else {
+	return false;
+}
 `
 	expected := []TokenResult{
 		{token.LET, "let"},
@@ -120,6 +132,23 @@ let result = add(five, ten);
 		{token.IDENT, "ten"},
 		{token.RPAREN, ")"},
 		{token.SEMICOLON, ";"},
+		{token.IF, "if"},
+		{token.LPAREN, "("},
+		{token.INT, "5"},
+		{token.LT, "<"},
+		{token.INT, "10"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.TRUE, "true"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.ELSE, "else"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.FALSE, "false"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
 		{token.EOF, ""},
 	}
 
