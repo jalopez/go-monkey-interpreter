@@ -7,12 +7,18 @@ type Lexer struct {
 	input        string
 	position     int  // current position in input (points to current char)
 	readPosition int  // current reading position in input (after current char)
+	line         int  // current line number
+	column       int  // current column number
 	ch           byte // current char under examination
 }
 
 // New creates a new lexer
 func New(input string) *Lexer {
-	l := &Lexer{input: input}
+	l := &Lexer{
+		input:  input,
+		line:   1,
+		column: 0,
+	}
 	l.readChar()
 	return l
 }
@@ -27,55 +33,72 @@ func (l *Lexer) NextToken() token.Token {
 	case '=':
 		if l.peekChar() == '=' {
 			ch := l.ch
+			column := l.column
 			l.readChar()
 			literal := string(ch) + string(l.ch)
-			nextToken = token.Token{Type: token.EQ, Literal: literal}
+			nextToken = token.Token{
+				Type:    token.EQ,
+				Literal: literal,
+				Line:    l.line,
+				Column:  column,
+			}
 		} else {
-			nextToken = newToken(token.ASSIGN, l.ch)
+			nextToken = newToken(token.ASSIGN, l)
 		}
 	case ';':
-		nextToken = newToken(token.SEMICOLON, l.ch)
+		nextToken = newToken(token.SEMICOLON, l)
 	case '(':
-		nextToken = newToken(token.LPAREN, l.ch)
+		nextToken = newToken(token.LPAREN, l)
 	case ')':
-		nextToken = newToken(token.RPAREN, l.ch)
+		nextToken = newToken(token.RPAREN, l)
 	case ',':
-		nextToken = newToken(token.COMMA, l.ch)
+		nextToken = newToken(token.COMMA, l)
 	case '+':
-		nextToken = newToken(token.PLUS, l.ch)
+		nextToken = newToken(token.PLUS, l)
 	case '{':
-		nextToken = newToken(token.LBRACE, l.ch)
+		nextToken = newToken(token.LBRACE, l)
 	case '}':
-		nextToken = newToken(token.RBRACE, l.ch)
+		nextToken = newToken(token.RBRACE, l)
 	case '-':
-		nextToken = newToken(token.MINUS, l.ch)
+		nextToken = newToken(token.MINUS, l)
 	case '!':
 		if l.peekChar() == '=' {
 			ch := l.ch
+			column := l.column
 			l.readChar()
 			literal := string(ch) + string(l.ch)
-			nextToken = token.Token{Type: token.NOTEQ, Literal: literal}
+			nextToken = token.Token{
+				Type:    token.NOTEQ,
+				Literal: literal,
+				Line:    l.line,
+				Column:  column,
+			}
 		} else {
-			nextToken = newToken(token.BANG, l.ch)
+			nextToken = newToken(token.BANG, l)
 		}
 	case '/':
-		nextToken = newToken(token.SLASH, l.ch)
+		nextToken = newToken(token.SLASH, l)
 	case '*':
-		nextToken = newToken(token.ASTERISK, l.ch)
+		nextToken = newToken(token.ASTERISK, l)
 	case '<':
-		nextToken = newToken(token.LT, l.ch)
+		nextToken = newToken(token.LT, l)
 	case '>':
-		nextToken = newToken(token.GT, l.ch)
+		nextToken = newToken(token.GT, l)
 	case 0:
 		nextToken.Literal = ""
 		nextToken.Type = token.EOF
 	default:
 		switch {
 		case isLetter(l.ch):
+			nextToken.Line = l.line
+			nextToken.Column = l.column
 			nextToken.Literal = l.readIdentifier()
 			nextToken.Type = token.LookupIdent(nextToken.Literal)
 			return nextToken
 		case isDigit(l.ch):
+			nextToken.Line = l.line
+			nextToken.Column = l.column
+
 			literal, ok := l.readNumber()
 
 			nextToken.Type = token.INT
@@ -87,7 +110,7 @@ func (l *Lexer) NextToken() token.Token {
 			nextToken.Literal = literal
 			return nextToken
 		default:
-			nextToken = newToken(token.ILLEGAL, l.ch)
+			nextToken = newToken(token.ILLEGAL, l)
 		}
 	}
 
@@ -104,6 +127,7 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition++
+	l.column++
 }
 
 func (l *Lexer) peekChar() byte {
@@ -130,13 +154,23 @@ func (l *Lexer) readNumber() (string, bool) {
 }
 
 func (l *Lexer) skipWhitespace() {
-	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+	for l.ch == ' ' || l.ch == '\t' || l.ch == '\r' || l.ch == '\n' {
+		if l.ch == '\n' {
+			l.line++
+			l.column = 0
+		}
+
 		l.readChar()
 	}
 }
 
-func newToken(tokenType token.Type, ch byte) token.Token {
-	return token.Token{Type: tokenType, Literal: string(ch)}
+func newToken(tokenType token.Type, l *Lexer) token.Token {
+	return token.Token{
+		Type:    tokenType,
+		Literal: string(l.ch),
+		Line:    l.line,
+		Column:  l.column,
+	}
 }
 
 func isLetter(ch byte) bool {

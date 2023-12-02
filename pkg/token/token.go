@@ -7,6 +7,8 @@ type Type string
 type Token struct {
 	Type    Type
 	Literal string
+	Line    int // line number where the token is located
+	Column  int // column number where the first char of the token is located
 }
 
 // All types of tokens
