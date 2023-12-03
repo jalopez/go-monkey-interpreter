@@ -9,11 +9,17 @@ type LetStatement struct {
 	Value Expression
 }
 
-func (*LetStatement) statementNode() {}
+func (*LetStatement) statementNode() {} //nolint:golint,unused
 
 // TokenLiteral token literal
 func (ls *LetStatement) TokenLiteral() string {
 	return ls.Token.Literal
+}
+
+func (ls *LetStatement) String() string {
+	return ls.TokenLiteral() + " " +
+		ls.Name.String() + " = " +
+		ls.Value.String() + ";"
 }
 
 // Identifier IDENT token
@@ -22,9 +28,13 @@ type Identifier struct {
 	Value string
 }
 
-func (*Identifier) expressionNode() {}
+func (*Identifier) expressionNode() {} //nolint:golint,unused
 
 // TokenLiteral token literal
 func (i *Identifier) TokenLiteral() string {
 	return i.Token.Literal
+}
+
+func (i *Identifier) String() string {
+	return i.Value
 }

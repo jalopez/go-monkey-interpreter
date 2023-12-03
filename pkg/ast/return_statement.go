@@ -8,9 +8,13 @@ type ReturnStatement struct {
 	ReturnValue Expression
 }
 
-func (*ReturnStatement) statementNode() {}
+func (*ReturnStatement) statementNode() {} //nolint:golint,unused
 
 // TokenLiteral token literal
 func (rs *ReturnStatement) TokenLiteral() string {
 	return rs.Token.Literal
+}
+
+func (rs *ReturnStatement) String() string {
+	return rs.TokenLiteral() + " " + rs.ReturnValue.String() + ";"
 }

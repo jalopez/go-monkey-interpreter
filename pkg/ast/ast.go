@@ -1,8 +1,11 @@
 package ast
 
+import "bytes"
+
 // Node node
 type Node interface {
 	TokenLiteral() string
+	String() string
 }
 
 // Statement statement
@@ -29,4 +32,18 @@ func (p *Program) TokenLiteral() string {
 	}
 
 	return ""
+}
+
+func (p *Program) String() string {
+	var out bytes.Buffer
+
+	for _, s := range p.Statements {
+		_, err := out.WriteString(s.String())
+
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return out.String()
 }
