@@ -21,3 +21,8 @@ func (es *ExpressionStatement) String() string {
 
 	return ""
 }
+
+// ToJSON to json
+func (es *ExpressionStatement) ToJSON() string {
+	return `{"type":"expression","value":` + es.Expression.ToJSON() + `}`
+}

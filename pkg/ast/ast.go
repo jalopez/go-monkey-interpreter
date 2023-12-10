@@ -1,11 +1,10 @@
 package ast
 
-import "bytes"
-
 // Node node
 type Node interface {
 	TokenLiteral() string
 	String() string
+	ToJSON() string
 }
 
 // Statement statement
@@ -35,15 +34,25 @@ func (p *Program) TokenLiteral() string {
 }
 
 func (p *Program) String() string {
-	var out bytes.Buffer
+	out := ""
 
 	for _, s := range p.Statements {
-		_, err := out.WriteString(s.String())
-
-		if err != nil {
-			panic(err)
-		}
+		out += s.String()
 	}
 
-	return out.String()
+	return out
+}
+
+// ToJSON to json
+func (p *Program) ToJSON() string {
+	out := "["
+
+	for _, s := range p.Statements {
+		out += s.ToJSON()
+		out += ","
+	}
+	out = out[:len(out)-1]
+	out += "]"
+
+	return out
 }

@@ -16,6 +16,11 @@ func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
 // String string representation
 func (il *IntegerLiteral) String() string { return il.Token.Literal }
 
+// ToJSON to json
+func (il *IntegerLiteral) ToJSON() string {
+	return `{"type":"integer","value":` + il.Token.Literal + `}`
+}
+
 // Boolean literal with boolean value
 type Boolean struct {
 	Token token.Token
@@ -29,3 +34,8 @@ func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
 
 // String string representation
 func (b *Boolean) String() string { return b.Token.Literal }
+
+// ToJSON to json
+func (b *Boolean) ToJSON() string {
+	return `{"type":"boolean","value":` + b.Token.Literal + `}`
+}

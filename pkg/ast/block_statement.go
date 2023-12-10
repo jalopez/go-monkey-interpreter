@@ -23,3 +23,14 @@ func (bs *BlockStatement) String() string {
 
 	return out
 }
+
+// ToJSON to json
+func (bs *BlockStatement) ToJSON() string {
+	var out string
+
+	for _, s := range bs.Statements {
+		out += s.ToJSON()
+	}
+
+	return `{"type":"block","value":[` + out + `]}`
+}

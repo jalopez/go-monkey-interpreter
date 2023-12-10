@@ -18,3 +18,8 @@ func (rs *ReturnStatement) TokenLiteral() string {
 func (rs *ReturnStatement) String() string {
 	return rs.TokenLiteral() + " " + rs.ReturnValue.String() + ";"
 }
+
+// ToJSON to json
+func (rs *ReturnStatement) ToJSON() string {
+	return `{"type":"return","value":` + rs.ReturnValue.ToJSON() + `}`
+}

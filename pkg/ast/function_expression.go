@@ -32,3 +32,21 @@ func (fl *FunctionLiteral) String() string {
 
 	return out
 }
+
+// ToJSON to json
+func (fl *FunctionLiteral) ToJSON() string {
+	out := `{"type":"function","value":`
+	out += `{"parameters":[`
+
+	for i, p := range fl.Parameters {
+		if i != 0 {
+			out += ","
+		}
+
+		out += p.ToJSON()
+	}
+
+	out += `],"body":` + fl.Body.ToJSON() + "}}"
+
+	return out
+}

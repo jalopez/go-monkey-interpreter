@@ -22,6 +22,10 @@ func (ls *LetStatement) String() string {
 		ls.Value.String() + ";"
 }
 
+func (ls *LetStatement) ToJSON() string {
+	return `{"type":"let","name":` + ls.Name.ToJSON() + `,"value":` + ls.Value.ToJSON() + `}`
+}
+
 // Identifier IDENT token
 type Identifier struct {
 	Token token.Token // the token.IDENT token
@@ -37,4 +41,9 @@ func (i *Identifier) TokenLiteral() string {
 
 func (i *Identifier) String() string {
 	return i.Value
+}
+
+// ToJSON to json
+func (i *Identifier) ToJSON() string {
+	return `{"type":"identifier","value":"` + i.Value + `"}`
 }

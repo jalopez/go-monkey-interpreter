@@ -33,3 +33,18 @@ func (ce *CallExpression) String() string {
 
 	return out
 }
+
+// ToJSON to json
+func (ce *CallExpression) ToJSON() string {
+	var out string
+
+	arguments := []string{}
+	for _, a := range ce.Arguments {
+		arguments = append(arguments, a.ToJSON())
+	}
+
+	out += `{"type":"call","value":{`
+	out += `"function":` + ce.Function.ToJSON() + ","
+	out += `"arguments":[` + strings.Join(arguments, ",") + "]}}"
+	return out
+}

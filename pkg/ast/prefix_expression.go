@@ -20,3 +20,8 @@ func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
 func (pe *PrefixExpression) String() string {
 	return "(" + pe.Operator + pe.Right.String() + ")"
 }
+
+// ToJSON to json
+func (pe *PrefixExpression) ToJSON() string {
+	return `{"type":"` + pe.Operator + `","value":` + pe.Right.ToJSON() + `}`
+}

@@ -21,3 +21,8 @@ func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Literal }
 func (ie *InfixExpression) String() string {
 	return "(" + ie.Left.String() + " " + ie.Operator + " " + ie.Right.String() + ")"
 }
+
+// ToJSON to json
+func (ie *InfixExpression) ToJSON() string {
+	return `{"type":"` + ie.Operator + `","left":` + ie.Left.ToJSON() + `,"right":` + ie.Right.ToJSON() + `}`
+}

@@ -28,3 +28,14 @@ func (ie *IfExpression) String() string {
 
 	return out
 }
+
+// ToJSON to json
+func (ie *IfExpression) ToJSON() string {
+	out := `{"type":"if","condition":` + ie.Condition.ToJSON() + `,"consequence":` + ie.Consequence.ToJSON()
+
+	if ie.Alternative != nil {
+		out += `,"alternative":` + ie.Alternative.ToJSON()
+	}
+
+	return out + `}`
+}
