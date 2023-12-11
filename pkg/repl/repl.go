@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/jalopez/go-monkey-interpreter/pkg/interpreter"
+	interpreter "github.com/jalopez/go-monkey-interpreter/pkg/eval"
 	"github.com/jalopez/go-monkey-interpreter/pkg/lexer"
 	"github.com/jalopez/go-monkey-interpreter/pkg/parser"
 	"github.com/jalopez/go-monkey-interpreter/pkg/token"
