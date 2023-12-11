@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/jalopez/go-monkey-interpreter/pkg/interpreter"
 	"github.com/jalopez/go-monkey-interpreter/pkg/lexer"
 	"github.com/jalopez/go-monkey-interpreter/pkg/parser"
 	"github.com/jalopez/go-monkey-interpreter/pkg/token"
@@ -29,7 +30,6 @@ const monkeyFace = `            __,__
 // Options options
 type Options struct {
 	Verbose bool
-	JSON    bool
 }
 
 // Start starts the REPL
@@ -61,23 +61,26 @@ func Start(in io.Reader, out io.Writer, options Options) {
 			continue
 		}
 
-		if options.JSON {
+		result := interpreter.Eval(program)
+		if result != nil {
+			io.WriteString(out, result.Inspect())
+			io.WriteString(out, "\n")
+		}
+
+		if options.Verbose {
+			io.WriteString(out, "----DEBUG\n")
+
+			printLexerTokens(out, line)
+
+			io.WriteString(out, " AST:\n")
+
 			_, err := fmt.Fprintf(out, "%s\n", program.ToJSON())
 			if err != nil {
 				panic(err)
 			}
-		} else {
-			_, err := fmt.Fprintf(out, "%s\n", program.String())
-			if err != nil {
-				panic(err)
-			}
-		}
 
-		if options.Verbose {
-			printLexerTokens(out, line)
 		}
 	}
-
 }
 
 func printParserErrors(out io.Writer, errors []string) {
@@ -94,7 +97,7 @@ func printLexerTokens(out io.Writer, line string) {
 
 	l := lexer.New(line)
 
-	io.WriteString(out, " lexer tokens:\n")
+	io.WriteString(out, " TOKENS:\n")
 	for tok := l.NextToken(); tok.Type != token.EOF; tok = l.NextToken() {
 		_, err := fmt.Fprintf(out, "%+v\n", tok)
 		if err != nil {

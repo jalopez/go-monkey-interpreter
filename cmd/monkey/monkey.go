@@ -12,16 +12,14 @@ import (
 )
 
 func main() {
-	parser := argparse.NewParser("monkey", "Monkey programming language interpreter")
-	verbose := parser.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Show verbose output"})
-	jsonAST := parser.Flag("j", "json-ast", &argparse.Options{Required: false, Help: "Print AST as JSON output"})
-
+	argparser := argparse.NewParser("monkey", "Monkey programming language interpreter")
+	verbose := argparser.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Show verbose output (lexer tokens and AST)"})
 	// Parse input
-	err := parser.Parse(os.Args)
+	err := argparser.Parse(os.Args)
 	if err != nil {
 		// In case of error print error and print usage
 		// This can also be done by passing -h or --help flags
-		_, err = fmt.Print(parser.Usage(err))
+		_, err = fmt.Print(argparser.Usage(err))
 		if err != nil {
 			panic(err)
 		}
@@ -39,6 +37,5 @@ func main() {
 	}
 	repl.Start(os.Stdin, os.Stdout, repl.Options{
 		Verbose: *verbose,
-		JSON:    *jsonAST,
 	})
 }
