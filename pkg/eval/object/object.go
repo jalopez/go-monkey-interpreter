@@ -12,6 +12,8 @@ const (
 	NULL_OBJ = "NULL"
 	// nolint:revive
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
+	// nolint:revive
+	ERROR_OBJ = "ERROR"
 )
 
 // Object types
