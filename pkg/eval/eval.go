@@ -41,6 +41,11 @@ func Eval(node ast.Node) object.Object {
 
 	case *ast.ReturnStatement:
 		val := Eval(node.ReturnValue)
+
+		if isError(val) {
+			return val
+		}
+
 		return &object.ReturnValue{Value: val}
 
 	// Expressions
@@ -55,6 +60,10 @@ func Eval(node ast.Node) object.Object {
 
 func evalIfExpression(ie *ast.IfExpression) object.Object {
 	condition := Eval(ie.Condition)
+
+	if isError(condition) {
+		return condition
+	}
 
 	condition = maybeIntegerToBoolean(condition)
 
@@ -121,6 +130,10 @@ func evalBlockStatement(block *ast.BlockStatement) object.Object {
 func evalPrefixExpression(node *ast.PrefixExpression) object.Object {
 	right := Eval(node.Right)
 
+	if isError(right) {
+		return right
+	}
+
 	switch node.Operator {
 	case token.BANG:
 		return evalBangOperatorExpression(right)
@@ -133,7 +146,17 @@ func evalPrefixExpression(node *ast.PrefixExpression) object.Object {
 
 func evalInfixExpression(node *ast.InfixExpression) object.Object {
 	left := Eval(node.Left)
+
+	if isError(left) {
+		return left
+	}
+
 	right := Eval(node.Right)
+
+	if isError(right) {
+		return right
+	}
+
 	operator := node.Operator
 
 	switch {
@@ -229,4 +252,11 @@ func newError(line, column int, format string, args ...any) *object.Error {
 		Line:    line,
 		Column:  column,
 	}
+}
+
+func isError(obj object.Object) bool {
+	if obj != nil {
+		return obj.Type() == object.ERROR_OBJ
+	}
+	return false
 }
