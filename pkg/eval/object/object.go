@@ -10,6 +10,8 @@ const (
 	BOOLEAN_OBJ = "BOOLEAN"
 	// nolint:revive
 	NULL_OBJ = "NULL"
+	// nolint:revive
+	RETURN_VALUE_OBJ = "RETURN_VALUE"
 )
 
 // Object types
