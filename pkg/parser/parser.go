@@ -188,7 +188,7 @@ func (p *Parser) parseIdentifier() ast.Expression {
 func (p *Parser) parseExpression(precedence int) ast.Expression {
 	parsePrefixFn := p.prefixParseFns[p.curToken.Type]
 	if parsePrefixFn == nil {
-		msg := fmt.Sprintf("no prefix parse function for %s found", p.curToken.Type)
+		msg := fmt.Sprintf("unexpected %s found", p.curToken.Type)
 		p.appendError(p.curToken, msg)
 		return nil
 	}

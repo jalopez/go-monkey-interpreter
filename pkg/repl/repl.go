@@ -6,6 +6,7 @@ import (
 	"io"
 
 	interpreter "github.com/jalopez/go-monkey-interpreter/pkg/eval"
+	"github.com/jalopez/go-monkey-interpreter/pkg/eval/object"
 	"github.com/jalopez/go-monkey-interpreter/pkg/lexer"
 	"github.com/jalopez/go-monkey-interpreter/pkg/parser"
 	"github.com/jalopez/go-monkey-interpreter/pkg/token"
@@ -13,19 +14,6 @@ import (
 
 // PROMPT prompt
 const PROMPT = "> "
-
-const monkeyFace = `            __,__
-   .--.  .-"     "-.  .--.
-  / .. \/  .-. .-.  \/ .. \
- | |  '|  /   Y   \  |'  | |
- | \   \  \ 0 | 0 /  /   / |
-  \ '- ,\.-"""""""-./, -' /
-   ''-' /_   ^ ^   _\ '-''
-       |  \._   _./  |
-       \   \ '~' /   /
-        '._ '-=-' _.'
-           '-----'
-`
 
 // Options options
 type Options struct {
@@ -35,6 +23,7 @@ type Options struct {
 // Start starts the REPL
 func Start(in io.Reader, out io.Writer, options Options) {
 	scanner := bufio.NewScanner(in)
+	env := object.NewEnvironment()
 
 	for {
 		_, err := fmt.Fprintf(out, PROMPT)
@@ -61,10 +50,12 @@ func Start(in io.Reader, out io.Writer, options Options) {
 			continue
 		}
 
-		result := interpreter.Eval(program)
+		result := interpreter.Eval(program, env)
 		if result != nil {
 			io.WriteString(out, result.Inspect())
 			io.WriteString(out, "\n")
+		} else {
+			io.WriteString(out, "nil\n")
 		}
 
 		if options.Verbose {
@@ -84,11 +75,8 @@ func Start(in io.Reader, out io.Writer, options Options) {
 }
 
 func printParserErrors(out io.Writer, errors []string) {
-	io.WriteString(out, monkeyFace)
-	io.WriteString(out, "Woops! We ran into some monkey business here!\n")
-	io.WriteString(out, " parser errors:\n")
 	for _, msg := range errors {
-		io.WriteString(out, "\t"+msg+"\n")
+		io.WriteString(out, "Error: "+msg+"\n")
 	}
 }
 
