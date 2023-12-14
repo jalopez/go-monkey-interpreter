@@ -83,6 +83,17 @@ func TestNextToken_illegalIdentifiers(t *testing.T) {
 	runTest(t, input, expected)
 }
 
+func TestNextToken_strings(t *testing.T) {
+	input := `"hello" "hello world"`
+	expected := []TokenResult{
+		{token.STRING, "hello", 1, 1},
+		{token.STRING, "hello world", 1, 9},
+		{token.EOF, "", 1, 35},
+	}
+
+	runTest(t, input, expected)
+}
+
 func TestNextToken_fullProgram(t *testing.T) {
 	input := `let five = 5;
 let ten = 10;

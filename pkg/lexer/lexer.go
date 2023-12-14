@@ -84,6 +84,19 @@ func (l *Lexer) NextToken() token.Token {
 		nextToken = newToken(token.LT, l)
 	case '>':
 		nextToken = newToken(token.GT, l)
+	case '"':
+		nextToken.Line = l.line
+		nextToken.Column = l.column
+
+		str, ok := l.readString()
+
+		if !ok {
+			nextToken.Type = token.ILLEGAL
+			nextToken.Literal = "Unterminated string"
+		}
+
+		nextToken.Type = token.STRING
+		nextToken.Literal = str
 	case 0:
 		nextToken.Literal = ""
 		nextToken.Type = token.EOF
@@ -143,6 +156,26 @@ func (l *Lexer) readIdentifier() string {
 		l.readChar()
 	}
 	return l.input[position:l.position]
+}
+
+func (l *Lexer) readString() (string, bool) {
+	position := l.position + 1
+	for {
+		l.readChar()
+		if l.ch == '"' {
+			break
+		}
+
+		if l.ch == '\n' || l.ch == 0 {
+			return "", false
+		}
+
+		if l.ch == '\\' {
+			l.readChar()
+		}
+	}
+
+	return l.input[position:l.position], true
 }
 
 func (l *Lexer) readNumber() (string, bool) {
