@@ -13,6 +13,8 @@ const (
 	// nolint:revive
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
 	// nolint:revive
+	FUNCTION_OBJ = "FUNCTION"
+	// nolint:revive
 	ERROR_OBJ = "ERROR"
 )
 
