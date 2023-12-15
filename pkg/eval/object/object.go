@@ -15,6 +15,8 @@ const (
 	// nolint:revive
 	FUNCTION_OBJ = "FUNCTION"
 	// nolint:revive
+	STRING_OBJ = "STRING"
+	// nolint:revive
 	ERROR_OBJ = "ERROR"
 )
 
