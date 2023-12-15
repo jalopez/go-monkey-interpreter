@@ -18,6 +18,8 @@ const (
 	STRING_OBJ = "STRING"
 	// nolint:revive
 	ERROR_OBJ = "ERROR"
+	// nolint:revive
+	BUILTIN_OBJ = "BUILTIN"
 )
 
 // Object types
