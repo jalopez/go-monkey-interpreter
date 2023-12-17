@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"os"
 
 	interpreter "github.com/jalopez/go-monkey-interpreter/pkg/eval"
 	"github.com/jalopez/go-monkey-interpreter/pkg/eval/object"
@@ -70,6 +71,52 @@ func Start(in io.Reader, out io.Writer, options Options) {
 				panic(err)
 			}
 
+		}
+	}
+}
+
+// StartFile reads a file and executes it
+func StartFile(filename string, out io.Writer, options Options) {
+	env := object.NewEnvironment()
+
+	f, err := os.ReadFile(filename)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fileContent := string(f)
+
+	l := lexer.New(fileContent)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	if len(p.Errors()) != 0 {
+		if options.Verbose {
+			printLexerTokens(out, fileContent)
+		}
+		printParserErrors(out, p.Errors())
+		return
+	}
+
+	result := interpreter.Eval(program, env)
+	if result != nil {
+		io.WriteString(out, result.Inspect())
+		io.WriteString(out, "\n")
+	} else {
+		io.WriteString(out, "nil\n")
+	}
+
+	if options.Verbose {
+		io.WriteString(out, "----DEBUG\n")
+
+		printLexerTokens(out, fileContent)
+
+		io.WriteString(out, " AST:\n")
+
+		_, err := fmt.Fprintf(out, "%s\n", program.ToJSON())
+		if err != nil {
+			panic(err)
 		}
 	}
 }
