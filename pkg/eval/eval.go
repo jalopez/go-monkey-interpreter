@@ -48,6 +48,35 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 
 		return &object.ReturnValue{Value: val}
 
+	case *ast.IndexExpression:
+		left := Eval(node.Left, env)
+		if isError(left) {
+			return left
+		}
+
+		if left.Type() == object.ARRAY_OBJ {
+			index := Eval(node.Index, env)
+			if isError(index) {
+				return index
+			}
+
+			indexValue := index.(*object.Integer).Value
+
+			if indexValue < 0 || indexValue >= int64(len(left.(*object.Array).Elements)) {
+				return NULL
+			}
+
+			item := left.(*object.Array).Elements[indexValue]
+
+			if item == nil {
+				return NULL
+			}
+
+			return item
+		}
+
+		return newError(node.Token.Line, node.Token.Column, "index operator not supported: %s", left.Type())
+
 	case *ast.LetStatement:
 		val := Eval(node.Value, env)
 		if isError(val) {
