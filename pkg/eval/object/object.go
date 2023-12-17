@@ -20,6 +20,8 @@ const (
 	ERROR_OBJ = "ERROR"
 	// nolint:revive
 	BUILTIN_OBJ = "BUILTIN"
+	// nolint:revive
+	ARRAY_OBJ = "ARRAY"
 )
 
 // Object types
