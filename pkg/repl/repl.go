@@ -72,6 +72,16 @@ func Start(in io.Reader, out io.Writer, options Options) {
 			stackTop := machine.LastPoppedStackElem()
 			io.WriteString(out, stackTop.Inspect())
 			io.WriteString(out, "\n")
+
+			if options.Verbose {
+				io.WriteString(out, "----DEBUG\n")
+				io.WriteString(out, "Constants:\n")
+				for i, constant := range comp.Bytecode().Constants {
+					io.WriteString(out, fmt.Sprintf("%d: %s\n", i, constant.Inspect()))
+				}
+				io.WriteString(out, "Instructions:\n")
+				io.WriteString(out, comp.Bytecode().Instructions.String())
+			}
 		} else {
 			result := interpreter.Eval(program, env)
 			if result != nil {
@@ -81,20 +91,19 @@ func Start(in io.Reader, out io.Writer, options Options) {
 				io.WriteString(out, "nil\n")
 			}
 
-		}
+			if options.Verbose {
+				io.WriteString(out, "----DEBUG\n")
 
-		if options.Verbose {
-			io.WriteString(out, "----DEBUG\n")
+				printLexerTokens(out, line)
 
-			printLexerTokens(out, line)
+				io.WriteString(out, " AST:\n")
 
-			io.WriteString(out, " AST:\n")
+				_, err := fmt.Fprintf(out, "%s\n", program.ToJSON())
+				if err != nil {
+					panic(err)
+				}
 
-			_, err := fmt.Fprintf(out, "%s\n", program.ToJSON())
-			if err != nil {
-				panic(err)
 			}
-
 		}
 	}
 }
@@ -139,6 +148,11 @@ func StartFile(filename string, out io.Writer, options Options) {
 		stackTop := machine.LastPoppedStackElem()
 		io.WriteString(out, stackTop.Inspect())
 		io.WriteString(out, "\n")
+
+		if options.Verbose {
+			io.WriteString(out, "----DEBUG\n")
+			io.WriteString(out, comp.Bytecode().Instructions.String())
+		}
 	} else {
 		result := interpreter.Eval(program, env)
 		if result != nil {
@@ -147,18 +161,18 @@ func StartFile(filename string, out io.Writer, options Options) {
 		} else {
 			io.WriteString(out, "nil\n")
 		}
-	}
 
-	if options.Verbose {
-		io.WriteString(out, "----DEBUG\n")
+		if options.Verbose {
+			io.WriteString(out, "----DEBUG\n")
 
-		printLexerTokens(out, fileContent)
+			printLexerTokens(out, fileContent)
 
-		io.WriteString(out, " AST:\n")
+			io.WriteString(out, " AST:\n")
 
-		_, err := fmt.Fprintf(out, "%s\n", program.ToJSON())
-		if err != nil {
-			panic(err)
+			_, err := fmt.Fprintf(out, "%s\n", program.ToJSON())
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 }
