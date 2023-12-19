@@ -8,8 +8,8 @@ import (
 
 	"github.com/jalopez/go-monkey-interpreter/pkg/ast"
 	"github.com/jalopez/go-monkey-interpreter/pkg/code"
-	"github.com/jalopez/go-monkey-interpreter/pkg/eval/object"
 	"github.com/jalopez/go-monkey-interpreter/pkg/lexer"
+	"github.com/jalopez/go-monkey-interpreter/pkg/object"
 	"github.com/jalopez/go-monkey-interpreter/pkg/parser"
 )
 

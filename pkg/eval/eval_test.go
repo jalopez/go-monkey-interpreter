@@ -3,8 +3,8 @@ package eval
 import (
 	"testing"
 
-	"github.com/jalopez/go-monkey-interpreter/pkg/eval/object"
 	"github.com/jalopez/go-monkey-interpreter/pkg/lexer"
+	"github.com/jalopez/go-monkey-interpreter/pkg/object"
 	"github.com/jalopez/go-monkey-interpreter/pkg/parser"
 )
 

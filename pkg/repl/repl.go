@@ -7,8 +7,8 @@ import (
 	"os"
 
 	interpreter "github.com/jalopez/go-monkey-interpreter/pkg/eval"
-	"github.com/jalopez/go-monkey-interpreter/pkg/eval/object"
 	"github.com/jalopez/go-monkey-interpreter/pkg/lexer"
+	"github.com/jalopez/go-monkey-interpreter/pkg/object"
 	"github.com/jalopez/go-monkey-interpreter/pkg/parser"
 	"github.com/jalopez/go-monkey-interpreter/pkg/token"
 )

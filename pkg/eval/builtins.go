@@ -3,7 +3,7 @@ package eval
 import (
 	"fmt"
 
-	"github.com/jalopez/go-monkey-interpreter/pkg/eval/object"
+	"github.com/jalopez/go-monkey-interpreter/pkg/object"
 )
 
 var builtins = map[string]*object.Builtin{
