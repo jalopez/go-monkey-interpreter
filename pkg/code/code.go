@@ -19,6 +19,8 @@ const (
 	OpMul
 	OpDiv
 	OpPop
+	OpTrue
+	OpFalse
 )
 
 // Definition is a struct that holds the name and the number of operands for an opcode.
@@ -35,6 +37,8 @@ var Definitions = map[Opcode]*Definition{
 	OpMul:      {"OpMul", []int{}},
 	OpDiv:      {"OpDiv", []int{}},
 	OpPop:      {"OpPop", []int{}},
+	OpTrue:     {"OpTrue", []int{}},
+	OpFalse:    {"OpFalse", []int{}},
 }
 
 // Lookup returns the definition for the given opcode.

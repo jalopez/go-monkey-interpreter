@@ -8,6 +8,9 @@ import (
 	"github.com/jalopez/go-monkey-interpreter/pkg/object"
 )
 
+var True = &object.Boolean{Value: true}
+var False = &object.Boolean{Value: false}
+
 // StackSize is the size of the stack.
 const StackSize = 2048
 
@@ -65,6 +68,16 @@ func (vm *VM) Run() error {
 			}
 		case code.OpPop:
 			vm.pop()
+		case code.OpTrue:
+			err := vm.push(True)
+			if err != nil {
+				return err
+			}
+		case code.OpFalse:
+			err := vm.push(False)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
