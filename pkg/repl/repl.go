@@ -6,11 +6,13 @@ import (
 	"io"
 	"os"
 
+	"github.com/jalopez/go-monkey-interpreter/pkg/compiler"
 	interpreter "github.com/jalopez/go-monkey-interpreter/pkg/eval"
 	"github.com/jalopez/go-monkey-interpreter/pkg/lexer"
 	"github.com/jalopez/go-monkey-interpreter/pkg/object"
 	"github.com/jalopez/go-monkey-interpreter/pkg/parser"
 	"github.com/jalopez/go-monkey-interpreter/pkg/token"
+	"github.com/jalopez/go-monkey-interpreter/pkg/vm"
 )
 
 // PROMPT prompt
@@ -18,7 +20,8 @@ const PROMPT = "> "
 
 // Options options
 type Options struct {
-	Verbose bool
+	Verbose        bool
+	UseInterpreter bool
 }
 
 // Start starts the REPL
@@ -51,12 +54,32 @@ func Start(in io.Reader, out io.Writer, options Options) {
 			continue
 		}
 
-		result := interpreter.Eval(program, env)
-		if result != nil {
-			io.WriteString(out, result.Inspect())
-			io.WriteString(out, "\n")
+		if options.UseInterpreter {
+			result := interpreter.Eval(program, env)
+			if result != nil {
+				io.WriteString(out, result.Inspect())
+				io.WriteString(out, "\n")
+			} else {
+				io.WriteString(out, "nil\n")
+			}
 		} else {
-			io.WriteString(out, "nil\n")
+			comp := compiler.New()
+			err := comp.Compile(program)
+			if err != nil {
+				fmt.Fprintf(out, "Compilation failed:\n %s\n", err)
+				continue
+			}
+
+			machine := vm.New(comp.Bytecode())
+			err = machine.Run()
+			if err != nil {
+				fmt.Fprintf(out, "Executing bytecode failed:\n %s\n", err)
+				continue
+			}
+
+			stackTop := machine.StackTop()
+			io.WriteString(out, stackTop.Inspect())
+			io.WriteString(out, "\n")
 		}
 
 		if options.Verbose {
@@ -99,12 +122,30 @@ func StartFile(filename string, out io.Writer, options Options) {
 		return
 	}
 
-	result := interpreter.Eval(program, env)
-	if result != nil {
-		io.WriteString(out, result.Inspect())
-		io.WriteString(out, "\n")
+	if options.UseInterpreter {
+		result := interpreter.Eval(program, env)
+		if result != nil {
+			io.WriteString(out, result.Inspect())
+			io.WriteString(out, "\n")
+		} else {
+			io.WriteString(out, "nil\n")
+		}
 	} else {
-		io.WriteString(out, "nil\n")
+		comp := compiler.New()
+		err := comp.Compile(program)
+		if err != nil {
+			fmt.Fprintf(out, "Compilation failed:\n %s\n", err)
+		}
+
+		machine := vm.New(comp.Bytecode())
+		err = machine.Run()
+		if err != nil {
+			fmt.Fprintf(out, "Executing bytecode failed:\n %s\n", err)
+		}
+
+		stackTop := machine.StackTop()
+		io.WriteString(out, stackTop.Inspect())
+		io.WriteString(out, "\n")
 	}
 
 	if options.Verbose {

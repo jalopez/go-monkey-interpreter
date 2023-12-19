@@ -1,9 +1,12 @@
 package compiler
 
 import (
+	"fmt"
+
 	"github.com/jalopez/go-monkey-interpreter/pkg/ast"
 	"github.com/jalopez/go-monkey-interpreter/pkg/code"
 	"github.com/jalopez/go-monkey-interpreter/pkg/object"
+	"github.com/jalopez/go-monkey-interpreter/pkg/token"
 )
 
 // Compiler compiles the AST into bytecode.
@@ -52,6 +55,13 @@ func (c *Compiler) Compile(node ast.Node) error {
 		err = c.Compile(node.Right)
 		if err != nil {
 			return err
+		}
+
+		switch node.Operator {
+		case token.PLUS:
+			c.emit(code.OpAdd)
+		default:
+			return fmt.Errorf("unknown operator %s", node.Operator)
 		}
 
 	case *ast.IntegerLiteral:

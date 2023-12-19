@@ -14,6 +14,7 @@ import (
 func main() {
 	argparser := argparse.NewParser("monkey", "Monkey programming language interpreter")
 	verbose := argparser.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Show verbose output (lexer tokens and AST)"})
+	interpreter := argparser.Flag("e", "eval", &argparse.Options{Required: false, Help: "Use interpreter to evaluate expression instead of compiler"})
 	file := argparser.StringPositional(&argparse.Options{Required: false, Help: "File to execute"})
 	// Parse input
 	err := argparser.Parse(os.Args)
@@ -45,6 +46,7 @@ func main() {
 	}
 
 	repl.Start(os.Stdin, os.Stdout, repl.Options{
-		Verbose: *verbose,
+		Verbose:        *verbose,
+		UseInterpreter: *interpreter,
 	})
 }

@@ -14,6 +14,7 @@ type Opcode byte
 // Constants for the opcodes.
 const (
 	OpConstant Opcode = iota
+	OpAdd
 )
 
 // Definition is a struct that holds the name and the number of operands for an opcode.
@@ -25,6 +26,7 @@ type Definition struct {
 // Definitions is a map that holds the definitions for all the opcodes.
 var Definitions = map[Opcode]*Definition{
 	OpConstant: {"OpConstant", []int{2}},
+	OpAdd:      {"OpAdd", []int{}},
 }
 
 // Lookup returns the definition for the given opcode.
@@ -55,6 +57,8 @@ func Make(op Opcode, operands ...int) []byte {
 	for i, operand := range operands {
 		width := def.OperandWidths[i]
 		switch width {
+		case 0:
+			continue
 		case 2:
 			binary.BigEndian.PutUint16(instruction[offset:], uint16(operand))
 		}
@@ -92,6 +96,8 @@ func readOperands(def *Definition, ins Instructions) ([]int, int) {
 	offset := 0
 	for i, width := range def.OperandWidths {
 		switch width {
+		case 0:
+			continue
 		case 2:
 			operands[i] = int(ReadUint16(ins[offset:]))
 		}
@@ -116,6 +122,8 @@ func formatInstruction(def *Definition, operands []int) string {
 	}
 
 	switch operandCount {
+	case 0:
+		return def.Name
 	case 1:
 		return fmt.Sprintf("%s %d", def.Name, operands[0])
 	case 2:
