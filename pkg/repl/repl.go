@@ -21,7 +21,7 @@ const PROMPT = "> "
 // Options options
 type Options struct {
 	Verbose        bool
-	UseInterpreter bool
+	CompileEnabled bool
 }
 
 // Start starts the REPL
@@ -54,15 +54,7 @@ func Start(in io.Reader, out io.Writer, options Options) {
 			continue
 		}
 
-		if options.UseInterpreter {
-			result := interpreter.Eval(program, env)
-			if result != nil {
-				io.WriteString(out, result.Inspect())
-				io.WriteString(out, "\n")
-			} else {
-				io.WriteString(out, "nil\n")
-			}
-		} else {
+		if options.CompileEnabled {
 			comp := compiler.New()
 			err := comp.Compile(program)
 			if err != nil {
@@ -77,9 +69,18 @@ func Start(in io.Reader, out io.Writer, options Options) {
 				continue
 			}
 
-			stackTop := machine.StackTop()
+			stackTop := machine.LastPoppedStackElem()
 			io.WriteString(out, stackTop.Inspect())
 			io.WriteString(out, "\n")
+		} else {
+			result := interpreter.Eval(program, env)
+			if result != nil {
+				io.WriteString(out, result.Inspect())
+				io.WriteString(out, "\n")
+			} else {
+				io.WriteString(out, "nil\n")
+			}
+
 		}
 
 		if options.Verbose {
@@ -122,15 +123,7 @@ func StartFile(filename string, out io.Writer, options Options) {
 		return
 	}
 
-	if options.UseInterpreter {
-		result := interpreter.Eval(program, env)
-		if result != nil {
-			io.WriteString(out, result.Inspect())
-			io.WriteString(out, "\n")
-		} else {
-			io.WriteString(out, "nil\n")
-		}
-	} else {
+	if options.CompileEnabled {
 		comp := compiler.New()
 		err := comp.Compile(program)
 		if err != nil {
@@ -143,9 +136,17 @@ func StartFile(filename string, out io.Writer, options Options) {
 			fmt.Fprintf(out, "Executing bytecode failed:\n %s\n", err)
 		}
 
-		stackTop := machine.StackTop()
+		stackTop := machine.LastPoppedStackElem()
 		io.WriteString(out, stackTop.Inspect())
 		io.WriteString(out, "\n")
+	} else {
+		result := interpreter.Eval(program, env)
+		if result != nil {
+			io.WriteString(out, result.Inspect())
+			io.WriteString(out, "\n")
+		} else {
+			io.WriteString(out, "nil\n")
+		}
 	}
 
 	if options.Verbose {

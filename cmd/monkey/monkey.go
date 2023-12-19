@@ -14,7 +14,7 @@ import (
 func main() {
 	argparser := argparse.NewParser("monkey", "Monkey programming language interpreter")
 	verbose := argparser.Flag("v", "verbose", &argparse.Options{Required: false, Help: "Show verbose output (lexer tokens and AST)"})
-	interpreter := argparser.Flag("e", "eval", &argparse.Options{Required: false, Help: "Use interpreter to evaluate expression instead of compiler"})
+	disableCompiler := argparser.Flag("d", "disable-compiler", &argparse.Options{Required: false, Help: "Do not compile but interpret directly"})
 	file := argparser.StringPositional(&argparse.Options{Required: false, Help: "File to execute"})
 	// Parse input
 	err := argparser.Parse(os.Args)
@@ -28,10 +28,13 @@ func main() {
 		os.Exit(1)
 	}
 
+	options := repl.Options{
+		Verbose:        *verbose,
+		CompileEnabled: !*disableCompiler,
+	}
+
 	if *file != "" {
-		repl.StartFile(*file, os.Stdout, repl.Options{
-			Verbose: *verbose,
-		})
+		repl.StartFile(*file, os.Stdout, options)
 		return
 	}
 
@@ -40,13 +43,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	// Print options
+	_, err = fmt.Printf("%+v\n", options)
+
 	_, err = fmt.Printf("Feel free to type in commands\n")
 	if err != nil {
 		panic(err)
 	}
 
-	repl.Start(os.Stdin, os.Stdout, repl.Options{
-		Verbose:        *verbose,
-		UseInterpreter: *interpreter,
-	})
+	repl.Start(os.Stdin, os.Stdout, options)
 }
