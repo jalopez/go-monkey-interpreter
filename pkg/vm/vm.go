@@ -20,11 +20,15 @@ var Null = &object.Null{}
 // StackSize is the size of the stack.
 const StackSize = 2048
 
+// GlobalsSize is the size of the globals.
+const GlobalsSize = 65536
+
 // VM is the virtual machine.
 type VM struct {
 	constants    []object.Object
 	instructions code.Instructions
 	stack        []object.Object
+	globals      []object.Object
 	sp           int // Always points to the next value. Top of stack is stack[sp-1].
 }
 
@@ -34,8 +38,9 @@ func New(bytecode *compiler.Bytecode) *VM {
 		instructions: bytecode.Instructions,
 		constants:    bytecode.Constants,
 
-		stack: make([]object.Object, StackSize),
-		sp:    0,
+		stack:   make([]object.Object, StackSize),
+		globals: make([]object.Object, GlobalsSize),
+		sp:      0,
 	}
 }
 
@@ -58,6 +63,22 @@ func (vm *VM) Run() error {
 		op := code.Opcode(vm.instructions[ip])
 
 		switch op {
+
+		case code.OpSetGlobal:
+			globalIndex := code.ReadUint16(vm.instructions[ip+1:])
+
+			vm.globals[globalIndex] = vm.pop()
+			ip += 2
+
+		case code.OpGetGlobal:
+			globalIndex := code.ReadUint16(vm.instructions[ip+1:])
+			ip += 2
+
+			err := vm.push(vm.globals[globalIndex])
+			if err != nil {
+				return err
+			}
+
 		case code.OpConstant:
 			constIndex := code.ReadUint16(vm.instructions[ip+1:])
 			ip += 2

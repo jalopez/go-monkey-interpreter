@@ -21,6 +21,7 @@ type Compiler struct {
 	constants           []object.Object
 	lastInstruction     EmittedInstruction
 	previousInstruction EmittedInstruction
+	symbolTable         *SymbolTable
 }
 
 // Bytecode holds the compiled bytecode.
@@ -36,6 +37,7 @@ func New() *Compiler {
 		constants:           []object.Object{},
 		lastInstruction:     EmittedInstruction{},
 		previousInstruction: EmittedInstruction{},
+		symbolTable:         NewSymbolTable(),
 	}
 }
 
@@ -56,6 +58,30 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return err
 		}
 		c.emit(code.OpPop)
+
+	case *ast.LetStatement:
+		err := c.Compile(node.Value)
+
+		symbol, ok := c.symbolTable.Resolve(node.Name.Value)
+
+		if !ok {
+			symbol = c.symbolTable.Define(node.Name.Value)
+		}
+
+		c.emit(code.OpSetGlobal, symbol.Index)
+
+		if err != nil {
+			return err
+		}
+
+	case *ast.Identifier:
+		symbol, ok := c.symbolTable.Resolve(node.Value)
+
+		if !ok {
+			return fmt.Errorf("undefined variable %s", node.Value)
+		}
+
+		c.emit(code.OpGetGlobal, symbol.Index)
 
 	case *ast.BlockStatement:
 		for _, s := range node.Statements {

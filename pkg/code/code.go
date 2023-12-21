@@ -29,6 +29,8 @@ const (
 	OpJumpNotTruthy
 	OpJump
 	OpNull
+	OpGetGlobal
+	OpSetGlobal
 )
 
 // Definition is a struct that holds the name and the number of operands for an opcode.
@@ -55,6 +57,8 @@ var Definitions = map[Opcode]*Definition{
 	OpJumpNotTruthy: {"OpJumpNotTruthy", []int{2}},
 	OpJump:          {"OpJump", []int{2}},
 	OpNull:          {"OpNull", []int{}},
+	OpGetGlobal:     {"OpGetGlobal", []int{2}},
+	OpSetGlobal:     {"OpSetGlobal", []int{2}},
 }
 
 // Lookup returns the definition for the given opcode.
