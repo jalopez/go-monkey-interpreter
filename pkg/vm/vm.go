@@ -8,8 +8,14 @@ import (
 	"github.com/jalopez/go-monkey-interpreter/pkg/object"
 )
 
+// True is the true object.
 var True = &object.Boolean{Value: true}
+
+// False is the false object.
 var False = &object.Boolean{Value: false}
+
+// Null is the null object.
+var Null = &object.Null{}
 
 // StackSize is the size of the stack.
 const StackSize = 2048
@@ -89,6 +95,22 @@ func (vm *VM) Run() error {
 			}
 		case code.OpMinus:
 			err := vm.executeMinusOperator()
+			if err != nil {
+				return err
+			}
+		case code.OpJump:
+			pos := int(code.ReadUint16(vm.instructions[ip+1:]))
+			ip = pos - 1
+		case code.OpJumpNotTruthy:
+			pos := int(code.ReadUint16(vm.instructions[ip+1:]))
+			ip += 2
+
+			condition := vm.pop()
+			if !isTruthy(condition) {
+				ip = pos - 1
+			}
+		case code.OpNull:
+			err := vm.push(Null)
 			if err != nil {
 				return err
 			}
@@ -220,4 +242,15 @@ func nativeBoolToBooleanObject(input bool) *object.Boolean {
 		return True
 	}
 	return False
+}
+
+func isTruthy(obj object.Object) bool {
+	switch obj := obj.(type) {
+	case *object.Boolean:
+		return obj.Value
+	case *object.Null:
+		return false
+	default:
+		return true
+	}
 }
