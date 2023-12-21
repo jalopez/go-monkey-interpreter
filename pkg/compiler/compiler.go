@@ -41,6 +41,14 @@ func New() *Compiler {
 	}
 }
 
+// NewWithState creates a new compiler with a symbol table and constants.
+func NewWithState(s *SymbolTable, constants []object.Object) *Compiler {
+	compiler := New()
+	compiler.symbolTable = s
+	compiler.constants = constants
+	return compiler
+}
+
 // Compile compiles the AST into bytecode.
 func (c *Compiler) Compile(node ast.Node) error {
 	switch node := node.(type) {
