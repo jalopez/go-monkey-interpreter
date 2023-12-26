@@ -146,10 +146,16 @@ func (vm *VM) Run() error {
 			ip += 2
 			array := vm.buildArray(vm.sp-numElements, vm.sp)
 
-			vm.sp = vm.sp - numElements
+			vm.sp -= numElements
 
 			err := vm.push(array)
-
+			if err != nil {
+				return err
+			}
+		case code.OpIndex:
+			index := vm.pop()
+			array := vm.pop()
+			err := vm.executeIndexExpression(array, index)
 			if err != nil {
 				return err
 			}
@@ -326,6 +332,31 @@ func (vm *VM) buildArray(startIndex, endIndex int) object.Object {
 	}
 
 	return &object.Array{Elements: elements}
+}
+
+func (vm *VM) executeIndexExpression(left, index object.Object) error {
+	switch {
+	case left.Type() == object.ARRAY_OBJ && index.Type() == object.INTEGER_OBJ:
+		return vm.executeArrayIndex(left, index)
+	default:
+		return fmt.Errorf("index operator not supported: %s", left.Type())
+	}
+}
+
+func (vm *VM) executeArrayIndex(array, index object.Object) error {
+	arrayObject, ok := array.(*object.Array)
+	if !ok {
+		return fmt.Errorf("object is not an array: %T (%+v)", array, array)
+	}
+
+	indexValue := index.(*object.Integer).Value
+	max := int64(len(arrayObject.Elements) - 1)
+
+	if indexValue < 0 || indexValue > max {
+		return vm.push(Null)
+	}
+
+	return vm.push(arrayObject.Elements[indexValue])
 }
 
 func nativeBoolToBooleanObject(input bool) *object.Boolean {
