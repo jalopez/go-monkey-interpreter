@@ -33,6 +33,9 @@ const (
 	OpSetGlobal
 	OpArray
 	OpIndex
+	OpCall
+	OpReturnValue
+	OpReturn
 )
 
 // Definition is a struct that holds the name and the number of operands for an opcode.
@@ -63,6 +66,9 @@ var Definitions = map[Opcode]*Definition{
 	OpSetGlobal:     {"OpSetGlobal", []int{2}},
 	OpArray:         {"OpArray", []int{2}},
 	OpIndex:         {"OpIndex", []int{}},
+	OpCall:          {"OpCall", []int{}},
+	OpReturnValue:   {"OpReturnValue", []int{}},
+	OpReturn:        {"OpReturn", []int{}},
 }
 
 // Lookup returns the definition for the given opcode.

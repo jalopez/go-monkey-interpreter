@@ -22,6 +22,8 @@ const (
 	BUILTIN_OBJ = "BUILTIN"
 	// nolint:revive
 	ARRAY_OBJ = "ARRAY"
+	// nolint:revive
+	COMPILED_FUNCTION_OBJ = "COMPILED_FUNCTION_OBJ"
 )
 
 // Object types
