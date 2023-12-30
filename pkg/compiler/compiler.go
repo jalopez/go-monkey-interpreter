@@ -81,17 +81,14 @@ func (c *Compiler) Compile(node ast.Node) error {
 
 	case *ast.LetStatement:
 		err := c.Compile(node.Value)
-
-		symbol, ok := c.symbolTable.Resolve(node.Name.Value)
-
-		if !ok {
-			symbol = c.symbolTable.Define(node.Name.Value)
-		}
-
-		c.emit(code.OpSetGlobal, symbol.Index)
-
 		if err != nil {
 			return err
+		}
+		symbol := c.symbolTable.Define(node.Name.Value)
+		if symbol.Scope == GlobalScope {
+			c.emit(code.OpSetGlobal, symbol.Index)
+		} else {
+			c.emit(code.OpSetLocal, symbol.Index)
 		}
 
 	case *ast.Identifier:
@@ -101,7 +98,11 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return fmt.Errorf("undefined variable %s", node.Value)
 		}
 
-		c.emit(code.OpGetGlobal, symbol.Index)
+		if symbol.Scope == GlobalScope {
+			c.emit(code.OpGetGlobal, symbol.Index)
+		} else {
+			c.emit(code.OpGetLocal, symbol.Index)
+		}
 
 	case *ast.BlockStatement:
 		for _, s := range node.Statements {
@@ -308,6 +309,8 @@ func (c *Compiler) enterScope() {
 	}
 	c.scopes = append(c.scopes, scope)
 	c.scopeIndex++
+
+	c.symbolTable = NewEnclosedSymbolTable(c.symbolTable)
 }
 
 func (c *Compiler) leaveScope() code.Instructions {
@@ -316,8 +319,11 @@ func (c *Compiler) leaveScope() code.Instructions {
 	c.scopes = c.scopes[:len(c.scopes)-1]
 	c.scopeIndex--
 
+	c.symbolTable = c.symbolTable.outer
+
 	return instructions
 }
+
 func (c *Compiler) addConstant(obj object.Object) int {
 	c.constants = append(c.constants, obj)
 
