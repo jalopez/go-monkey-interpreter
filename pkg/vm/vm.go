@@ -42,7 +42,7 @@ func New(bytecode *compiler.Bytecode) *VM {
 	mainFn := &object.CompiledFunction{Instructions: bytecode.Instructions}
 	mainFrame := NewFrame(mainFn)
 
-	frames := make([]*Frame, 1, MaxFrames)
+	frames := make([]*Frame, MaxFrames)
 	frames[0] = mainFrame
 
 	return &VM{
@@ -181,6 +181,31 @@ func (vm *VM) Run() error {
 			if err != nil {
 				return err
 			}
+		case code.OpCall:
+			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFunction)
+			if !ok {
+				return fmt.Errorf("calling non-function")
+			}
+			frame := NewFrame(fn)
+			vm.pushFrame(frame)
+		case code.OpReturnValue:
+			returnValue := vm.pop()
+
+			vm.popFrame()
+			vm.pop()
+
+			err := vm.push(returnValue)
+			if err != nil {
+				return err
+			}
+		case code.OpReturn:
+			vm.popFrame()
+			vm.pop()
+
+			err := vm.push(Null)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -189,6 +214,16 @@ func (vm *VM) Run() error {
 
 func (vm *VM) currentFrame() *Frame {
 	return vm.frames[vm.framesIndex-1]
+}
+
+func (vm *VM) pushFrame(f *Frame) {
+	vm.frames[vm.framesIndex] = f
+	vm.framesIndex++
+}
+
+func (vm *VM) popFrame() *Frame {
+	vm.framesIndex--
+	return vm.frames[vm.framesIndex]
 }
 
 func (vm *VM) push(o object.Object) error {
