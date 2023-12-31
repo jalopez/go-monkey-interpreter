@@ -8,8 +8,9 @@ import (
 
 // CompiledFunction compiled function
 type CompiledFunction struct {
-	Instructions code.Instructions
-	NumLocals    int
+	Instructions  code.Instructions
+	NumLocals     int
+	NumParameters int
 }
 
 // Type type
