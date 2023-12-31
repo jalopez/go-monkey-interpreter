@@ -23,6 +23,7 @@ lint:
 	golangci-lint run -v --timeout=10m
 fmt:
 	@gofmt -l -w $(SRC)
+	@gofumpt -l -w $(SRC)
 
 simplify:
 	@gofmt -s -l -w $(SRC)
