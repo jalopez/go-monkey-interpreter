@@ -7,13 +7,17 @@ import (
 
 // Frame holds the frame.
 type Frame struct {
-	fn *object.CompiledFunction
-	ip int
+	fn          *object.CompiledFunction
+	ip          int
+	basePointer int
 }
 
 // NewFrame creates a new frame.
-func NewFrame(fn *object.CompiledFunction) *Frame {
-	return &Frame{fn: fn, ip: -1}
+func NewFrame(fn *object.CompiledFunction, basePointer int) *Frame {
+	return &Frame{fn: fn,
+		ip:          -1,
+		basePointer: basePointer,
+	}
 }
 
 // Instructions returns the instructions of the frame.

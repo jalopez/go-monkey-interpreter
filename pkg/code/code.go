@@ -162,6 +162,11 @@ func ReadUint16(ins Instructions) uint16 {
 	return binary.BigEndian.Uint16(ins)
 }
 
+// ReadUint8 reads a uint8 from a byte slice.
+func ReadUint8(ins Instructions) uint8 {
+	return ins[0]
+}
+
 // formatInstruction formats the instruction into a string.
 func formatInstruction(def *Definition, operands []int) string {
 	operandCount := len(def.OperandWidths)
