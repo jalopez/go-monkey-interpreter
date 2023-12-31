@@ -150,6 +150,9 @@ func applyFunction(t token.Token, fn object.Object, args []object.Object) object
 		if ok != nil {
 			return newError(t.Line, t.Column, ok.Error())
 		}
+		if value == nil {
+			return NULL
+		}
 		return value
 
 	default:
@@ -174,6 +177,7 @@ func unwrapReturnValue(obj object.Object) object.Object {
 
 	return obj
 }
+
 func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Object {
 	condition := Eval(ie.Condition, env)
 

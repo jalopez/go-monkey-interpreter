@@ -700,8 +700,8 @@ func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 }
 
 func testInfixExpression(t *testing.T, exp ast.Expression, left interface{},
-	operator string, right interface{}) bool {
-
+	operator string, right interface{},
+) bool {
 	opExp, ok := exp.(*ast.InfixExpression)
 	if !ok {
 		t.Errorf("exp is not ast.InfixExpression. got=%T(%s)", exp, exp)

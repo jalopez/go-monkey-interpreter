@@ -366,7 +366,6 @@ func (vm *VM) executeIntegerComparison(
 	op code.Opcode,
 	left, right object.Object,
 ) error {
-
 	leftValue := left.(*object.Integer).Value
 	rightValue := right.(*object.Integer).Value
 
@@ -386,7 +385,6 @@ func (vm *VM) executeStringComparison(
 	op code.Opcode,
 	left, right object.Object,
 ) error {
-
 	leftValue := left.(*object.String).Value
 	rightValue := right.(*object.String).Value
 

@@ -14,7 +14,8 @@ type Frame struct {
 
 // NewFrame creates a new frame.
 func NewFrame(fn *object.CompiledFunction, basePointer int) *Frame {
-	return &Frame{fn: fn,
+	return &Frame{
+		fn:          fn,
 		ip:          -1,
 		basePointer: basePointer,
 	}

@@ -35,7 +35,6 @@ func Start(in io.Reader, out io.Writer, options Options) {
 
 	for {
 		_, err := fmt.Fprintf(out, PROMPT)
-
 		if err != nil {
 			panic(err)
 		}
@@ -120,7 +119,6 @@ func StartFile(filename string, out io.Writer, options Options) {
 	env := object.NewEnvironment()
 
 	f, err := os.ReadFile(filename)
-
 	if err != nil {
 		panic(err)
 	}

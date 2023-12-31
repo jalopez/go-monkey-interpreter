@@ -178,7 +178,6 @@ func (c *Compiler) Compile(node ast.Node) error {
 
 	case *ast.IndexExpression:
 		err := c.Compile(node.Left)
-
 		if err != nil {
 			return err
 		}
@@ -364,6 +363,7 @@ func (c *Compiler) addInstruction(ins []byte) int {
 
 	return posNewInstruction
 }
+
 func (c *Compiler) setLastInstruction(op code.Opcode, pos int) {
 	previous := c.scopes[c.scopeIndex].lastInstruction
 	last := EmittedInstruction{Opcode: op, Position: pos}
