@@ -38,6 +38,7 @@ const (
 	OpReturn
 	OpGetLocal
 	OpSetLocal
+	OpGetBuiltin
 )
 
 // Definition is a struct that holds the name and the number of operands for an opcode.
@@ -73,6 +74,7 @@ var Definitions = map[Opcode]*Definition{
 	OpReturn:        {"OpReturn", []int{}},
 	OpGetLocal:      {"OpGetLocal", []int{1}},
 	OpSetLocal:      {"OpSetLocal", []int{1}},
+	OpGetBuiltin:    {"OpGetBuiltin", []int{1}},
 }
 
 // Lookup returns the definition for the given opcode.
