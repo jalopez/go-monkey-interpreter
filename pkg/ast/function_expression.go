@@ -7,6 +7,7 @@ type FunctionLiteral struct {
 	Token      token.Token // The 'fn' token
 	Parameters []*Identifier
 	Body       *BlockStatement
+	Name       string
 }
 
 func (*FunctionLiteral) expressionNode() {} //nolint:golint,unused
@@ -18,6 +19,10 @@ func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
 func (fl *FunctionLiteral) String() string {
 	out := fl.TokenLiteral()
 	out += "("
+
+	if fl.Name != "" {
+		out += "<" + fl.Name + ">"
+	}
 
 	for i, p := range fl.Parameters {
 		if i != 0 {
