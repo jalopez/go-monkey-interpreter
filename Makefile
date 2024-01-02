@@ -14,6 +14,12 @@ build: clean
 clean:
 	rm -rf dist/
 
+.PHONY: benchmark
+benchmark:
+	go build -o dist/benchmark ./cmd/benchmark
+	./dist/benchmark -engine=eval
+	./dist/benchmark -engine=vm
+
 .PHONY: test
 test:
 	go test -v ./pkg/...
