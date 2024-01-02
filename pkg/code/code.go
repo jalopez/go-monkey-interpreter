@@ -39,6 +39,7 @@ const (
 	OpGetLocal
 	OpSetLocal
 	OpGetBuiltin
+	OpClosure
 )
 
 // Definition is a struct that holds the name and the number of operands for an opcode.
@@ -75,6 +76,7 @@ var Definitions = map[Opcode]*Definition{
 	OpGetLocal:      {"OpGetLocal", []int{1}},
 	OpSetLocal:      {"OpSetLocal", []int{1}},
 	OpGetBuiltin:    {"OpGetBuiltin", []int{1}},
+	OpClosure:       {"OpClosure", []int{2, 1}},
 }
 
 // Lookup returns the definition for the given opcode.

@@ -24,6 +24,8 @@ const (
 	ARRAY_OBJ = "ARRAY"
 	// nolint:revive
 	COMPILED_FUNCTION_OBJ = "COMPILED_FUNCTION_OBJ"
+	// nolint:revive
+	CLOSURE_OBJ = "CLOSURE"
 )
 
 // Object types
